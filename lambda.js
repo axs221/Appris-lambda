@@ -16,7 +16,7 @@ function getRemindersText(value) {
 }
 
 function listReminders(value, event, context, callback) {
-  console.log(value);
+  value = value || [];
 
   if (callback) {
     context.callbackWaitsForEmptyEventLoop = false;
@@ -38,8 +38,7 @@ function listReminders(value, event, context, callback) {
             "type": "PlainText",
             "text": null
           }
-        },
-        "shouldEndSession": false
+        }
       }
     });
   }
@@ -96,8 +95,7 @@ function createReminder(value, db, event, context, callback) {
             "type": "PlainText",
             "text": null
           }
-        },
-        "shouldEndSession": false
+        }
       }
     });
   }
@@ -113,11 +111,58 @@ function handleCreateReminderIntent(event, context, callback) {
   });
 }
 
+function handleLaunchRequest(event, context, callback) {
+  context.callbackWaitsForEmptyEventLoop = false;
+	callback(null, {
+		"version": "1.0",
+		"response": {
+			"outputSpeech": {
+				"type": "PlainText",
+				"text": "What can I help you with?"
+			},
+			"card": {
+				"type": "Simple",
+				"title": "Appris",
+				"content": "What can I help you with?"
+			},
+			"reprompt": {
+				"outputSpeech": {
+					"type": "PlainText",
+					"text": "Can I help you with anything else?"
+				}
+			},
+			"shouldEndSession": false
+		}
+	});
+}
+
+function handleSessionEndedRequest(event, context, callback) {
+  context.callbackWaitsForEmptyEventLoop = false;
+	callback(null, {
+		"version": "1.0",
+		"response": {
+			"outputSpeech": {
+				"type": "PlainText",
+				"text": "Goodbye!"
+			},
+			"card": {
+				"type": "Simple",
+				"title": "Appris",
+				"content": "Goodbye!"
+			}
+		}
+	});
+}
+
 exports.handler = function(event, context, callback) {
   console.log('EVENT', JSON.stringify(event, null, 2));
   console.log('CONTEXT', JSON.stringify(context, null, 2));
 
-  if (event.request.intent.name === "ListRemindersIntent") {
+  if (event.request.type === "LaunchRequest") {
+		handleLaunchRequest(event, context, callback);
+  } else if (event.request.type === "SessionEndedRequest") {
+		handleSessionEndedRequest(event, context, callback);
+	} else if (event.request.intent.name === "ListRemindersIntent") {
     handleListRemindersIntent(event, context, callback);
   } else if (event.request.intent.name === "CreateReminderIntent") {
     handleCreateReminderIntent(event, context, callback);
