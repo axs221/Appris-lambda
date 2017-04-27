@@ -159,10 +159,10 @@ exports.handler = function(event, context, callback) {
   console.log('CONTEXT', JSON.stringify(context, null, 2));
 
   if (event.request.type === "LaunchRequest") {
-		handleLaunchRequest(event, context, callback);
+    handleLaunchRequest(event, context, callback);
   } else if (event.request.type === "SessionEndedRequest") {
-		handleSessionEndedRequest(event, context, callback);
-	} else if (event.request.intent.name === "ListRemindersIntent") {
+    handleSessionEndedRequest(event, context, callback);
+  } else if (event.request.intent.name === "ListRemindersIntent") {
     handleListRemindersIntent(event, context, callback);
   } else if (event.request.intent.name === "CreateReminderIntent") {
     handleCreateReminderIntent(event, context, callback);
@@ -170,4 +170,3 @@ exports.handler = function(event, context, callback) {
     handleListRemindersIntent(event, context, callback);
   }
 }
-
